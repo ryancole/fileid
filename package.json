@@ -1,8 +1,8 @@
 {
     "name": "ofi.node",
     "version": "0.0.1",
-    "description": "Oracle file id addon",
-    "main": "lib/index.js",
+    "description": "A node.js addon for Oracle's file id library.",
+    "main": "test/ofi.js",
     "scripts": {
         "install": "node-gyp rebuild"
     },
