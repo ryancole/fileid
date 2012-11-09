@@ -1,0 +1,14 @@
+{
+  "name": "ofi.node",
+  "version": "0.0.1",
+  "description": "Oracle file id addon.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node-gyp rebuild"
+  },
+  "repository": "",
+  "author": "Ryan Cole",
+  "license": "BSD",
+  "gypfile": true
+}
