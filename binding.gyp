@@ -1,8 +1,8 @@
 {
     "targets": [
         {
-            "target_name": "ofi",
-            "sources": ["src/ofi.cc"],
+            "target_name": "fileid",
+            "sources": ["src/fileid.cc"],
             "include_dirs": ["/usr/local/include"],
             "link_settings": {
                 "libraries": ["-lsc_fi"],

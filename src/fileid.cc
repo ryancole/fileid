@@ -29,24 +29,15 @@ Handle<Value> identify (const Arguments& args) {
         
     }
     
-    // get the specified file path
-    Local<String> path (args[0]->ToString());
-    
     VTWORD wType;
-    VTDWORD dwFlags = 0;
-    VTBYTE pTypeName[4096] = "";
+    VTBYTE pTypeName[128] = "";
     
-    // initialize file id engine
-    SCCERR fileIdError = FIInit();
-    
-    if (fileIdError != SCCERR_OK)
-        return scope.Close(Number::New((unsigned int)fileIdError));
+    // get the specified file path
+    String::Utf8Value path (args[0]->ToString());
     
     // identify the specified file's type
-    fileIdError = FIIdFileEx(IOTYPE_UNIXPATH, *path, dwFlags, &wType, (char*)pTypeName, 4096);
-    
-    if (fileIdError != SCCERR_OK)
-        return scope.Close(Number::New((unsigned int)fileIdError));
+    if (FIIdFileEx(IOTYPE_UNIXPATH, *path, FIFLAG_NORMAL, &wType, (char*)pTypeName, 128) != 0)
+        return scope.Close(Undefined());
     
     // create the new object
     Local<Object> result = Object::New();
@@ -55,17 +46,19 @@ Handle<Value> identify (const Arguments& args) {
     result->Set(String::NewSymbol("id"), Number::New(wType));
     result->Set(String::NewSymbol("name"), String::New((char*)pTypeName));
     
-    // deinitialize
-    FIDeInit();
-    
     return scope.Close(result);
     
 }
 
 void initialize (Handle<Object> target) {
     
+    // initialize file id engine
+    if (FIInit() != SCCERR_OK)
+        ThrowException(Exception::TypeError(String::New("Failed to initialize file id engine")));
+    
+    // export identify function
     target->Set(String::NewSymbol("identify"), FunctionTemplate::New(identify)->GetFunction());
     
 }
 
-NODE_MODULE(ofi, initialize)
+NODE_MODULE(fileid, initialize)
