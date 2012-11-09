@@ -17,14 +17,14 @@ Handle<Value> identify (const Arguments& args) {
     
     if (args.Length() != 1) {
         
-        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+        ThrowException(Exception::TypeError(String::New("expected one argument")));
         return scope.Close(Undefined());
         
     }
     
     if (!args[0]->IsString()) {
         
-        ThrowException(Exception::TypeError(String::New("Wrong arguments")));
+        ThrowException(Exception::TypeError(String::New("expected string argument")));
         return scope.Close(Undefined());
         
     }

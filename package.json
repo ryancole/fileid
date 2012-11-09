@@ -2,7 +2,7 @@
     "name": "fileid",
     "version": "0.0.1",
     "description": "A node.js addon for Oracle's file id library.",
-    "main": "test/fileid.js",
+    "main": "lib/fileid.js",
     "scripts": {
         "install": "node-gyp rebuild"
     },
