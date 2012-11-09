@@ -16,4 +16,4 @@ void Initialize (Handle<Object> target) {
     
 }
 
-NODE_MODULE(hello, Initialize)
+NODE_MODULE(ofi, Initialize)
