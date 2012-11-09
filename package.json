@@ -6,6 +6,7 @@
     "scripts": {
         "install": "node-gyp rebuild"
     },
+    "keywords": ["oracle", "fileid", "identify"],
     "repository": "",
     "author": "Ryan Cole",
     "license": "BSD",
