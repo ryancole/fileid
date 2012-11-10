@@ -57,19 +57,18 @@ void fileid_cleanup (uv_work_t* req) {
         argv[0] = Local<Value>::New(Null());
         argv[1] = Local<Value>::New(details);
         
-        // execute callback function
-        node::MakeCallback(Context::GetCurrent()->Global(), baton->callback, 2, argv);
-        
     } else {
         
         // set callback params
-        argv[0] = Local<Value>::New(Null());
-        argv[1] = Local<Value>::New(Null())
-        
-        // execute callback function
-        node::MakeCallback(Context::GetCurrent()->Global(), baton->callback, 2, argv);
+        argv[0] = Exception::Error(String::New("failed to identify the given file"));
+        argv[1] = Local<Value>::New(Null());
         
     }
+    
+    // execute callback function
+    node::MakeCallback(Context::GetCurrent()->Global(), baton->callback, 2, argv);
+    
+    delete baton;
     
 }
 

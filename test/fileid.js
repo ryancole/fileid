@@ -1,9 +1,11 @@
 
 var fileid = require('../lib/fileid');
 
-fileid.identify('/home/ryan/KPMG-CVSLONGS-00005455.XLS', function (err, details) {
+fileid.identify('./test/test.xlsx', function (err, details) {
     
-    console.log('inside callback:');
+    if (err)
+        console.log(err);
+    
     console.log(details);
     
 });
