@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <node.h>
 #include <v8.h>
 
@@ -14,11 +13,14 @@ using namespace v8;
 
 struct fileid_baton {
     
-    Local<Function> callback;
-    VTBYTE path[1024];
     bool success;
+    
     VTWORD id;
     VTBYTE name[128];
+    
+    String::Utf8Value* path;
+    Persistent<Function> callback;
+    
     uv_work_t req;
         
 };
@@ -27,35 +29,47 @@ void fileid_identify (uv_work_t* req) {
     
     fileid_baton* baton = (fileid_baton*) req->data;
     
-    strncpy((char*)baton->path, "/home/ryan/.bashrc", 18);
-    
     // identify the specified file's type
-    if (FIIdFileEx(IOTYPE_UNIXPATH, baton->path, FIFLAG_NORMAL, &baton->id, (char*)baton->name, 128) == 0)
+    if (FIIdFileEx(IOTYPE_UNIXPATH, **(baton->path), FIFLAG_NORMAL, &baton->id, (char*)baton->name, 128) == 0)
         baton->success = true;
     
 }
 
 void fileid_cleanup (uv_work_t* req) {
     
+    HandleScope scope;
+    
     fileid_baton* baton = (fileid_baton*) req->data;
     
-    // create details result object
-    Local<Object> details = Object::New();
+    // init callback params
+    Local<Value> argv[2];
     
-    // set detail properties
-    details->Set(String::NewSymbol("id"), Number::New(baton->id));
-    details->Set(String::NewSymbol("name"), String::New((char*)baton->name));
-    
-    // create callback params
-    Local<Value> argv[2] = {
+    if (baton->success == true) {
         
-        Local<Value>::New(Null()),
-        Local<Value>::New(details)
+        // create details result object
+        Local<Object> details = Object::New();
         
-    };
-    
-    // execute callback function
-    baton->callback->Call(Context::GetCurrent()->Global(), 2, argv);
+        // set detail properties
+        details->Set(String::NewSymbol("id"), Number::New(baton->id));
+        details->Set(String::NewSymbol("name"), String::New((char*)baton->name));
+        
+        // set callback params
+        argv[0] = Local<Value>::New(Null());
+        argv[1] = Local<Value>::New(details);
+        
+        // execute callback function
+        node::MakeCallback(Context::GetCurrent()->Global(), baton->callback, 2, argv);
+        
+    } else {
+        
+        // set callback params
+        argv[0] = Local<Value>::New(Null());
+        argv[1] = Local<Value>::New(Null())
+        
+        // execute callback function
+        node::MakeCallback(Context::GetCurrent()->Global(), baton->callback, 2, argv);
+        
+    }
     
 }
 
@@ -64,12 +78,14 @@ Handle<Value> identify (const Arguments& args) {
     HandleScope scope;
     
     // instanciate data baton
-    fileid_baton* baton = (fileid_baton*) malloc(sizeof(fileid_baton));
+    fileid_baton* baton = new fileid_baton;
     
     // initialize baton properties
-    baton->req.data = (void*) baton;
+    baton->id = 0;
     baton->success = false;
-    baton->callback = Local<Function>::Cast(args[1]);
+    baton->req.data = (void*) baton;
+    baton->path = new String::Utf8Value(args[0]->ToString());
+    baton->callback = Persistent<Function>::New(Local<Function>::Cast(args[1]));
     
     // initiate async work on thread pool
     uv_queue_work(uv_default_loop(), &baton->req, fileid_identify, fileid_cleanup);
