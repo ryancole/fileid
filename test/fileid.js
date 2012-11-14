@@ -1,11 +1,17 @@
 
 var fileid = require('../lib/fileid');
 
-fileid.identify('./test/test.xlsx', function (err, details) {
+// identify a single file
+fileid.identify('./test/etc/test.xlsx', function (err, details) {
     
-    if (err)
+    if (err) {
+        
         console.log(err);
-    
-    console.log(details);
+        
+    } else {
+        
+        console.log(details);
+        
+    }
     
 });
