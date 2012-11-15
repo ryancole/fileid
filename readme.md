@@ -20,7 +20,7 @@ fileid.identify('/home/foo/bar.xls', function (err, details) {
 
 # Compiling Prerequisites
 
-Download the Oracle file id SDK, place the header files in `/usr/local/include` and the shared objects in `/usr/local/lib`. Make sure `/usr/local/lib` is in `$LD_LIBRARY_PATH`.
+Download the Oracle file id SDK, place the header files in `/usr/local/include/fileid` and the *entire* contents of the sdk's `redist` directory into `/usr/local/lib/fileid`. Make sure `/usr/local/lib/fileid` is in `$LD_LIBRARY_PATH`.
 
 # Oracle
 
