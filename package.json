@@ -1,6 +1,6 @@
 {
     "name": "fileid",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "A node.js addon for Oracle's file id library.",
     "main": "lib/fileid.js",
     "scripts": {

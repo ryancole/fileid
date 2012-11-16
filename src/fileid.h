@@ -17,15 +17,4 @@ struct fileid_identify_baton {
         
 };
 
-struct fileid_init_baton {
-    
-    uv_work_t req;
-    
-    bool success;
-    Persistent<Function> callback;
-    
-};
-
-bool hasInitialized = false;
-
 #endif
